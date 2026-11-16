@@ -2,7 +2,7 @@
 
 React Native app for looking up Planets, Spaceships, and Films.
 
-iOS and web use bottom tabs. Android uses a navigation drawer. Each screen is laid out with Flexbox and shows its name.
+iOS and web use bottom tabs. Android uses a navigation drawer. Each screen is laid out with Flexbox and shows its name. A search box at the top of every screen opens a dialog with the term that was entered.
 
 ## Run
 
