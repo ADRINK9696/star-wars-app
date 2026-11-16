@@ -15,6 +15,6 @@ Then open the project in Expo Go, an emulator, or the browser.
 
 ## Expo Snack
 
-https://snack.expo.dev/A7qpdP6ecC5SyUxTWKI9D
+https://snack.expo.dev/kbJ2kY8YUdpnXuZgZh9Wq
 
 Use the Web or iOS preview for the bottom tabs. Switch the preview to Android for the drawer.
