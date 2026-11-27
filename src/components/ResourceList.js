@@ -1,6 +1,27 @@
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import Swipeable from './Swipeable';
 
 export default function ResourceList({ items, loading, error, onRetry, emptyLabel }) {
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  function showItem(item) {
+    setSelectedItem(item);
+  }
+
+  function closeDialog() {
+    setSelectedItem(null);
+  }
+
   if (loading && items.length === 0) {
     return (
       <View style={styles.status}>
@@ -22,25 +43,62 @@ export default function ResourceList({ items, loading, error, onRetry, emptyLabe
   }
 
   return (
-    <FlatList
-      data={items}
-      keyExtractor={(item) => item.url}
-      contentContainerStyle={items.length === 0 ? styles.emptyContainer : undefined}
-      refreshing={loading}
-      onRefresh={onRetry}
-      ListEmptyComponent={<Text style={styles.statusText}>{emptyLabel}</Text>}
-      renderItem={({ item }) => (
-        <View style={styles.row}>
-          <Text style={styles.title}>{item.title}</Text>
-          {item.detail ? <Text style={styles.detail}>{item.detail}</Text> : null}
-          {item.meta ? <Text style={styles.meta}>{item.meta}</Text> : null}
+    <View style={styles.list}>
+      <ScrollView
+        style={styles.scroll}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={onRetry}
+            tintColor="#FFE81F"
+            colors={['#FFE81F']}
+          />
+        }
+      >
+        {items.length === 0 ? (
+          <Text style={styles.statusText}>{emptyLabel}</Text>
+        ) : (
+          items.map((item) => (
+            <Swipeable key={item.url} item={item} onSwipe={showItem} />
+          ))
+        )}
+      </ScrollView>
+
+      <Modal
+        visible={selectedItem !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={closeDialog}
+      >
+        <View style={styles.backdrop}>
+          <View style={styles.dialog}>
+            <Text style={styles.dialogLabel}>Selected</Text>
+            <Text style={styles.dialogText}>{selectedItem?.title}</Text>
+            {selectedItem?.detail ? <Text style={styles.dialogDetail}>{selectedItem.detail}</Text> : null}
+            {selectedItem?.meta ? <Text style={styles.dialogMeta}>{selectedItem.meta}</Text> : null}
+            <Pressable
+              onPress={closeDialog}
+              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              accessibilityRole="button"
+              accessibilityLabel="Close item dialog"
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </Pressable>
+          </View>
         </View>
-      )}
-    />
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+  },
+  scroll: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   status: {
     flex: 1,
     justifyContent: 'center',
@@ -71,31 +129,60 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
-  emptyContainer: {
-    flexGrow: 1,
+  backdrop: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  row: {
     paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A3340',
+    backgroundColor: 'rgba(0, 0, 0, 0.72)',
   },
-  title: {
-    color: '#F5F7FA',
-    fontSize: 18,
+  dialog: {
+    width: '100%',
+    maxWidth: 360,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    borderRadius: 12,
+    backgroundColor: '#12171F',
+    borderWidth: 1,
+    borderColor: '#FFE81F',
+  },
+  dialogLabel: {
+    color: '#8B95A7',
+    fontSize: 14,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  dialogText: {
+    marginTop: 12,
+    color: '#FFE81F',
+    fontSize: 28,
     fontWeight: '700',
   },
-  detail: {
-    marginTop: 4,
-    color: '#B8C0CC',
-    fontSize: 15,
-    lineHeight: 21,
+  dialogDetail: {
+    marginTop: 12,
+    color: '#F5F7FA',
+    fontSize: 16,
+    lineHeight: 22,
   },
-  meta: {
-    marginTop: 4,
-    color: '#FFE81F',
-    fontSize: 13,
+  dialogMeta: {
+    marginTop: 6,
+    color: '#B8C0CC',
+    fontSize: 14,
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    marginTop: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#FFE81F',
+  },
+  closeButtonPressed: {
+    opacity: 0.5,
+  },
+  closeButtonText: {
+    color: '#0B0E14',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
