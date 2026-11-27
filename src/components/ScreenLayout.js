@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import LazyImage from './LazyImage';
+import NetworkStatus from './NetworkStatus';
 
 const GALAXY_URI = 'https://images-assets.nasa.gov/image/PIA04921/PIA04921~medium.jpg';
 
@@ -34,6 +35,7 @@ export default function ScreenLayout({ title, children }) {
 
   return (
     <View style={styles.screen}>
+      <NetworkStatus />
       <View style={styles.banner}>
         <LazyImage
           style={styles.hero}
