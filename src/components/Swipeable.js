@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { SlideInLeft } from 'react-native-reanimated';
 
 export default function Swipeable({ item, onSwipe }) {
   const scrollRef = useRef(null);
@@ -41,7 +42,11 @@ export default function Swipeable({ item, onSwipe }) {
   };
 
   return (
-    <View style={styles.swipeContainer} onLayout={onLayout}>
+    <Animated.View
+      entering={SlideInLeft.duration(400)}
+      style={styles.swipeContainer}
+      onLayout={onLayout}
+    >
       {pageWidth > 0 ? (
         <ScrollView ref={scrollRef} style={{ width: pageWidth }} {...scrollProps}>
           <TouchableOpacity activeOpacity={0.6}>
@@ -54,7 +59,7 @@ export default function Swipeable({ item, onSwipe }) {
           <View style={[styles.swipeBlank, { width: pageWidth }]} />
         </ScrollView>
       ) : null}
-    </View>
+    </Animated.View>
   );
 }
 
