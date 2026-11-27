@@ -8,6 +8,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import LazyImage from './LazyImage';
+
+const GALAXY_URI = 'https://images-assets.nasa.gov/image/PIA04921/PIA04921~medium.jpg';
 
 export default function ScreenLayout({ title, children }) {
   const [query, setQuery] = useState('');
@@ -32,29 +35,37 @@ export default function ScreenLayout({ title, children }) {
   return (
     <View style={styles.screen}>
       <View style={styles.banner}>
-        <Text style={styles.brand}>STAR WARS</Text>
-        <Text style={styles.bannerTitle}>{title}</Text>
-        <View style={styles.searchRow}>
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            onSubmitEditing={submitSearch}
-            placeholder={`Search ${title.toLowerCase()}`}
-            placeholderTextColor="#8B95A7"
-            returnKeyType="search"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.input}
-            accessibilityLabel={`Search ${title}`}
-          />
-          <Pressable
-            onPress={submitSearch}
-            style={({ pressed }) => [styles.searchButton, pressed && styles.searchButtonPressed]}
-            accessibilityRole="button"
-            accessibilityLabel="Submit search"
-          >
-            <Text style={styles.searchButtonText}>Search</Text>
-          </Pressable>
+        <LazyImage
+          style={styles.hero}
+          resizeMode="cover"
+          source={{ uri: GALAXY_URI }}
+          accessibilityLabel="The Sombrero Galaxy"
+        />
+        <View style={styles.bannerBody}>
+          <Text style={styles.brand}>STAR WARS</Text>
+          <Text style={styles.bannerTitle}>{title}</Text>
+          <View style={styles.searchRow}>
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              onSubmitEditing={submitSearch}
+              placeholder={`Search ${title.toLowerCase()}`}
+              placeholderTextColor="#8B95A7"
+              returnKeyType="search"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+              accessibilityLabel={`Search ${title}`}
+            />
+            <Pressable
+              onPress={submitSearch}
+              style={({ pressed }) => [styles.searchButton, pressed && styles.searchButtonPressed]}
+              accessibilityRole="button"
+              accessibilityLabel="Submit search"
+            >
+              <Text style={styles.searchButtonText}>Search</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 
@@ -91,12 +102,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#0B0E14',
   },
   banner: {
-    paddingTop: 20,
-    paddingBottom: 16,
-    paddingHorizontal: 24,
     backgroundColor: '#12171F',
     borderBottomWidth: 1,
     borderBottomColor: '#2A3340',
+  },
+  hero: {
+    width: '100%',
+    height: 168,
+    backgroundColor: '#0B0E14',
+    overflow: 'hidden',
+  },
+  bannerBody: {
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 24,
   },
   brand: {
     color: '#FFE81F',
